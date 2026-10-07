@@ -1,0 +1,399 @@
+// PRODUCT DATABASE
+
+const products = [
+
+    {
+        id: 1,
+        name: "Wireless Headphones",
+        category: "electronics",
+        price: 1499,
+        icon: "🎧"
+    },
+
+    {
+        id: 2,
+        name: "Smart Watch",
+        category: "electronics",
+        price: 2499,
+        icon: "⌚"
+    },
+
+    {
+        id: 3,
+        name: "Gaming Laptop",
+        category: "electronics",
+        price: 64999,
+        icon: "💻"
+    },
+
+    {
+        id: 4,
+        name: "Smartphone",
+        category: "electronics",
+        price: 29999,
+        icon: "📱"
+    },
+
+    {
+        id: 5,
+        name: "Running Shoes",
+        category: "fashion",
+        price: 1999,
+        icon: "👟"
+    },
+
+    {
+        id: 6,
+        name: "Hoodie",
+        category: "fashion",
+        price: 999,
+        icon: "🧥"
+    },
+
+    {
+        id: 7,
+        name: "Backpack",
+        category: "fashion",
+        price: 1299,
+        icon: "🎒"
+    },
+
+    {
+        id: 8,
+        name: "Table Lamp",
+        category: "home",
+        price: 799,
+        icon: "💡"
+    },
+
+    {
+        id: 9,
+        name: "Coffee Maker",
+        category: "home",
+        price: 3499,
+        icon: "☕"
+    },
+
+    {
+        id: 10,
+        name: "Football",
+        category: "sports",
+        price: 699,
+        icon: "⚽"
+    }
+
+];
+
+
+// CART
+
+let cart = [];
+
+
+// LOGIN
+
+function login() {
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("loginMessage");
+
+
+    if (username === "" || password === "") {
+
+        message.textContent =
+            "Please enter username and password.";
+
+        return;
+    }
+
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("storePage")
+        .classList.remove("hidden");
+
+    displayProducts(products);
+}
+
+
+// LOGOUT
+
+function logout() {
+
+    document
+        .getElementById("storePage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+}
+
+
+// DISPLAY PRODUCTS
+
+function displayProducts(productList) {
+
+    const container =
+        document.getElementById("productContainer");
+
+    container.innerHTML = "";
+
+
+    productList.forEach(product => {
+
+        const card = document.createElement("div");
+
+        card.className = "product";
+
+
+        card.innerHTML = `
+
+            <div class="product-image">
+                ${product.icon}
+            </div>
+
+            <h3>${product.name}</h3>
+
+            <p class="category">
+                ${product.category}
+            </p>
+
+            <p class="price">
+                ₹${product.price.toLocaleString("en-IN")}
+            </p>
+
+            <button
+                onclick="addToCart(${product.id})"
+            >
+                Add to Cart
+            </button>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+// ADD TO CART
+
+function addToCart(productId) {
+
+    const product =
+        products.find(
+            p => p.id === productId
+        );
+
+
+    cart.push(product);
+
+    updateCart();
+
+
+    alert(
+        product.name +
+        " added to cart!"
+    );
+
+}
+
+
+// UPDATE CART
+
+function updateCart() {
+
+    const cartCount =
+        document.getElementById("cartCount");
+
+    cartCount.textContent =
+        cart.length;
+
+
+    const cartItems =
+        document.getElementById("cartItems");
+
+    cartItems.innerHTML = "";
+
+
+    let total = 0;
+
+
+    cart.forEach((product, index) => {
+
+        total += product.price;
+
+
+        const item =
+            document.createElement("div");
+
+        item.className = "cart-item";
+
+
+        item.innerHTML = `
+
+            <div>
+
+                <strong>
+                    ${product.name}
+                </strong>
+
+                <p>
+                    ₹${product.price.toLocaleString("en-IN")}
+                </p>
+
+            </div>
+
+            <button
+                onclick="removeFromCart(${index})"
+            >
+                Remove
+            </button>
+
+        `;
+
+
+        cartItems.appendChild(item);
+
+    });
+
+
+    document.getElementById("cartTotal")
+        .textContent =
+        total.toLocaleString("en-IN");
+
+}
+
+
+// REMOVE FROM CART
+
+function removeFromCart(index) {
+
+    cart.splice(index, 1);
+
+    updateCart();
+
+}
+
+
+// SHOW CART
+
+function showCart() {
+
+    document
+        .getElementById("cartPanel")
+        .classList.add("active");
+
+}
+
+
+// CLOSE CART
+
+function closeCart() {
+
+    document
+        .getElementById("cartPanel")
+        .classList.remove("active");
+
+}
+
+
+// SEARCH
+
+function searchProducts() {
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase();
+
+
+    const filtered =
+        products.filter(product =>
+
+            product.name
+                .toLowerCase()
+                .includes(search)
+
+        );
+
+
+    displayProducts(filtered);
+
+}
+
+
+// CATEGORY FILTER
+
+function filterProducts(category) {
+
+    if (category === "all") {
+
+        displayProducts(products);
+
+        return;
+    }
+
+
+    const filtered =
+        products.filter(
+            product =>
+                product.category === category
+        );
+
+
+    displayProducts(filtered);
+
+}
+
+
+// SCROLL
+
+function scrollToProducts() {
+
+    document
+        .getElementById("productsTitle")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+// CHECKOUT
+
+function checkout() {
+
+    if (cart.length === 0) {
+
+        alert("Your cart is empty!");
+
+        return;
+    }
+
+
+    alert(
+        "Thank you for shopping with ShopKart!"
+    );
+
+    cart = [];
+
+    updateCart();
+
+    closeCart();
+
+}
